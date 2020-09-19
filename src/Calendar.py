@@ -1,5 +1,5 @@
-from setup import setup
-import School
+from src.setup import setup
+import src.School
 from datetime import datetime, timedelta
 
 
@@ -55,7 +55,7 @@ def return_calendar_id():
     return calendar['id']
 
 
-def set_events(school_class: School.SchoolClass, exam_calendar_id: str):
+def set_events(school_class: src.School.SchoolClass, exam_calendar_id: str):
     service = get_calendar_service()
     exam_list = school_class.all_exams
     today = datetime.today()
@@ -122,3 +122,5 @@ def view_events(items: int, calendar_id):
         just_time = start[:index]
 
         print(just_time, event['summary'])
+
+

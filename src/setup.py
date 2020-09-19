@@ -1,5 +1,5 @@
 import pickle
-import os.path
+import os
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -8,7 +8,7 @@ from google.auth.transport.requests import Request
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 # insert path to credentials file
-CREDENTIALS_FILE = 'Exam Scheduler.json'
+CREDENTIALS_FILE = os.path.join(os.path.abspath('credentials'), 'credentials.json')
 
 
 def setup():
@@ -16,6 +16,9 @@ def setup():
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
+
+    # needed to access file in credentials folder.
+    os.chdir('credentials')
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
             creds = pickle.load(token)
@@ -25,14 +28,14 @@ def setup():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
             pickle.dump(creds, token)
+    os.chdir('../')
 
-    service = build('calendar', 'v3', credentials=creds)
+    return build('calendar', 'v3', credentials=creds)
 
-    return service
 
 

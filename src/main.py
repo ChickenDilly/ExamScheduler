@@ -1,6 +1,6 @@
-import School
-import Calendar
-import setup
+import src.School
+import src.Calendar
+import src.setup
 
 
 def main():
@@ -9,7 +9,7 @@ def main():
     selection = ""
 
     while selection != "0":
-        setup.setup()
+        src.setup.setup()
         selection = input(menu)
 
         if selection == "1":
@@ -17,15 +17,15 @@ def main():
             class_name = input("Enter the class name or press (Q) to quit. \n")
 
             while class_name.upper() != "Q":
-                all_classes.append(School.SchoolClass.new_school_class(class_name))
+                all_classes.append(src.School.SchoolClass.new_school_class(class_name))
                 class_name = input("Enter the class name or press (Q) to quit.\n")
 
             try:
                 if all_classes[0].all_exams:
-                    calendar_id = Calendar.new_calendar()
+                    calendar_id = src.Calendar.new_calendar()
                     for school_class in all_classes:
                         # creates a new event for each exam date
-                        Calendar.set_events(school_class, calendar_id)
+                        src.Calendar.set_events(school_class, calendar_id)
 
                 elif not all_classes[0].all_exams:
                     print("No exams to enter. \n")
@@ -35,7 +35,7 @@ def main():
 
         elif selection == "2":
             events = int(input("How many events to list?"))
-            Calendar.view_events(events, Calendar.return_calendar_id())
+            src.Calendar.view_events(events, src.Calendar.return_calendar_id())
 
 
 if __name__ == '__main__':
