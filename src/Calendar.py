@@ -1,9 +1,11 @@
 from src.setup import setup
 import src.School
 from datetime import datetime, timedelta
+import re
 
 
 def get_calendar_service():
+    # needed for calendar authorization
     return setup()
 
 
@@ -104,7 +106,6 @@ def set_events(school_class: src.School.SchoolClass, exam_calendar_id: str):
 
 def view_events(items: int, calendar_id):
     service = get_calendar_service()
-    # Call the Calendar API
     now = datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     print('Getting List {} events'.format(items))
     events_result = service.events().list(
@@ -115,12 +116,35 @@ def view_events(items: int, calendar_id):
 
     if not events:
         print('No upcoming events found.')
+        return
 
     for event in events:
         start = event['start'].get("dateTime")
-        index = start.find('T')
+        index = event['start'].get("dateTime").find('T')
         just_time = start[:index]
 
         print(just_time, event['summary'])
+
+
+def weekly_events(calendar_id):
+    service = get_calendar_service()
+    events_results = service.events().list(
+        calendarId=calendar_id, timeMin=(datetime.utcnow().isoformat() + 'Z'),
+        singleEvents=True, orderBy='startTime').execute()
+    events = events_results.get('items', [])
+
+    # error checking isn't needing for out of bounds dates
+    date_pattern = re.compile(r'[0-1][0-9]-[0-3][0-9]')
+    start_of_week = datetime.today().strftime('%m') + '-' + (datetime.today() - timedelta(days=7)).strftime('%d')
+
+    for event in events:
+        event_date = date_pattern.search(event['summary']).group(0)
+
+        if int(start_of_week[0:2]) != int(event_date[0:2]):
+            # if int(start_of_week)
+            pass
+    print(r"Getting this week's events...")
+
+    # for event in events:
 
 

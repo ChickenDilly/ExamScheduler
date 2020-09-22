@@ -34,8 +34,17 @@ def main():
                 print("No classes were entered.\n")
 
         elif selection == "2":
-            events = int(input("How many events to list?"))
-            src.Calendar.view_events(events, src.Calendar.return_calendar_id())
+            try:
+                events = int(input("How many events to list?"))
+                #src.Calendar.view_events(events, src.Calendar.return_calendar_id())
+                src.Calendar.weekly_events(src.Calendar.return_calendar_id())
+            except ValueError:
+                print("Invalid input.")
+
+        ''' elif selection == "3":
+            print('Listing events due this week...)
+            
+        '''
 
 
 if __name__ == '__main__':
