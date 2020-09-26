@@ -5,7 +5,8 @@ import src.setup
 
 def main():
     menu = "Select a menu option. " \
-           "\n 0. Quit \n 1. Create calendar entries. \n 2. View calendar entries."
+           "\n 0. Quit \n 1. Create calendar entries. \n 2. View calendar entries. \n 3. Due dates for this week." \
+           "\n "
     selection = ""
 
     while selection != "0":
@@ -36,15 +37,15 @@ def main():
         elif selection == "2":
             try:
                 events = int(input("How many events to list?"))
-                #src.Calendar.view_events(events, src.Calendar.return_calendar_id())
-                src.Calendar.weekly_events(src.Calendar.return_calendar_id())
+                src.Calendar.view_events(events, src.Calendar.return_calendar_id())
             except ValueError:
                 print("Invalid input.")
 
-        ''' elif selection == "3":
-            print('Listing events due this week...)
-            
-        '''
+        elif selection == "3":
+            src.Calendar.weekly_events(src.Calendar.return_calendar_id())
+
+        else:
+            print("Invalid input. Try again.")
 
 
 if __name__ == '__main__':

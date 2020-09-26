@@ -129,22 +129,35 @@ def view_events(items: int, calendar_id):
 def weekly_events(calendar_id):
     service = get_calendar_service()
     events_results = service.events().list(
-        calendarId=calendar_id, timeMin=(datetime.utcnow().isoformat() + 'Z'),
+        calendarId=calendar_id,
         singleEvents=True, orderBy='startTime').execute()
     events = events_results.get('items', [])
 
     # error checking isn't needing for out of bounds dates
+    # format: mm-dd
     date_pattern = re.compile(r'[0-1][0-9]-[0-3][0-9]')
-    start_of_week = datetime.today().strftime('%m') + '-' + (datetime.today() - timedelta(days=7)).strftime('%d')
+    events_for_week = list()
+    today = datetime.today()
+    # number of days defined as a week
+    week = 7
 
     for event in events:
         event_date = date_pattern.search(event['summary']).group(0)
+        event_date = datetime(month=int(event_date[0:2]), day=int(event_date[3:]), year=today.year)
 
-        if int(start_of_week[0:2]) != int(event_date[0:2]):
-            # if int(start_of_week)
-            pass
+        if timedelta(days=week) >= event_date - today >= timedelta(days=0):
+            events_for_week.append(event)
+
+    if len(events_for_week) == 0:
+        print('No events are upcoming in the next {} days.', week)
+
     print(r"Getting this week's events...")
+    for event in events_for_week:
+        start = event['start'].get("dateTime")
+        index = event['start'].get("dateTime").find('T')
+        just_time = start[:index]
 
-    # for event in events:
+        print(just_time, event['summary'])
+
 
 
