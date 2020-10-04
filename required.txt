@@ -1,6 +1,0 @@
-googleAPI
-
-# i believe these are provided by the main googleAPI library
-google-auth
-google-httplib2
-google-auth-oauthlib
