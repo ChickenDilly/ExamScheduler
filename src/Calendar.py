@@ -10,6 +10,7 @@ def get_calendar_service():
 
 
 def new_calendar():
+    # adds all events
     service = get_calendar_service()
     calendar_format = {'summary': 'Exam Schedule', 'timeZone': 'America/New_York'}
     selection = str(input("Press (U) to update the calendar or (D) to delete old entries."))
@@ -38,6 +39,7 @@ def new_calendar():
 
 
 def return_calendar_id():
+    # creates an exam schedule calendar, if it doesn't exist, and returns the exam schedule calendar id
     service = get_calendar_service()
     calendar_format = {'summary': 'Exam Schedule', 'timeZone': 'America/New_York'}
     page_token = None
@@ -105,8 +107,9 @@ def set_events(school_class: src.School.SchoolClass, exam_calendar_id: str):
 
 
 def view_events(items: int, calendar_id):
+    # prints the next X events
     service = get_calendar_service()
-    now = datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+    now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
     print('Getting List {} events'.format(items))
     events_result = service.events().list(
        calendarId=calendar_id, timeMin=now,
@@ -126,38 +129,57 @@ def view_events(items: int, calendar_id):
         print(just_time, event['summary'])
 
 
-def weekly_events(calendar_id):
+def weekly_events(calendar_id, _week):
+    # finds and prints the due dates for the next X days with no duplicates.
     service = get_calendar_service()
-    events_results = service.events().list(
+    service_results = service.events().list(
         calendarId=calendar_id,
         singleEvents=True, orderBy='startTime').execute()
-    events = events_results.get('items', [])
+    __events = service_results.get('items', [])
 
     # error checking isn't needing for out of bounds dates
     # format: mm-dd
     date_pattern = re.compile(r'[0-1][0-9]-[0-3][0-9]')
-    events_for_week = list()
+    weeks_events = list()
     today = datetime.today()
-    # number of days defined as a week
-    week = 7
+    # today = datetime(year=2020, day=1, month=9)
+    week = _week  # number of days defined as a week
 
-    for event in events:
+    # from all events in the calendar look for the events in the next X days
+    # all duplicates wont be added to weeks_events
+    for event in __events:
         event_date = date_pattern.search(event['summary']).group(0)
-        event_date = datetime(month=int(event_date[0:2]), day=int(event_date[3:]), year=today.year)
+        try:
+            event_datetime = datetime(month=int(event_date[0:2]), day=int(event_date[3:]), year=today.year)
 
-        if timedelta(days=week) >= event_date - today >= timedelta(days=0):
-            events_for_week.append(event)
+            if timedelta(days=week) >= event_datetime - today >= timedelta(days=0):
+                equal_summary = False
 
-    if len(events_for_week) == 0:
-        print('No events are upcoming in the next {} days.', week)
+                for index_weeks in range(0, len(weeks_events), 1):
+                    summary_tested = event['summary']
+
+                    # if duplicate exists, stop checking
+                    if len(weeks_events) > 0:
+                        if summary_tested == weeks_events[index_weeks]['summary']:
+                            equal_summary = True
+                            break
+
+                # no duplicates, item added
+                if not equal_summary:
+                    weeks_events.append(event)
+
+        # confirms events must have event dates
+        except AttributeError:
+            continue
+
+    if len(weeks_events) == 0:
+        print('No events are upcoming in the next {} days.'.format(week))
+        return
 
     print(r"Getting this week's events...")
-    for event in events_for_week:
-        start = event['start'].get("dateTime")
-        index = event['start'].get("dateTime").find('T')
-        just_time = start[:index]
 
-        print(just_time, event['summary'])
+    for event in weeks_events:
+        print(event['summary'])
 
 
 
