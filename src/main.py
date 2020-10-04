@@ -5,7 +5,7 @@ import src.setup
 
 def main():
     menu = "Select a menu option. " \
-           "\n 0. Quit \n 1. Create calendar entries. \n 2. View calendar entries. \n 3. Due dates for this week." \
+           "\n 0. Quit \n 1. Create calendar entries. \n 2. View calendar entries. \n 3. View upcoming due dates." \
            "\n "
     selection = ""
 
@@ -42,7 +42,12 @@ def main():
                 print("Invalid input.")
 
         elif selection == "3":
-            src.Calendar.weekly_events(src.Calendar.return_calendar_id())
+            try:
+                dates = int(input("How many days to view due dates."))
+                src.Calendar.weekly_events(src.Calendar.return_calendar_id(), dates)
+
+            except ValueError:
+                print("Invalid input.")
 
         else:
             print("Invalid input. Try again.")

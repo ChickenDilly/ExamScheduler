@@ -5,7 +5,6 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 
-# If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 # insert path to credentials file
 CREDENTIALS_FILE = os.path.join(os.path.abspath('credentials'), 'credentials.json')
@@ -13,12 +12,17 @@ CREDENTIALS_FILE = os.path.join(os.path.abspath('credentials'), 'credentials.jso
 
 def setup():
     creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
+    # Passes service access the user's calendar to other functions.
 
-    # needed to access file in credentials folder.
-    os.chdir('credentials')
+    # The file token.pickle stores the user's access and refresh tokens in the
+    # credentials folder, and is created automatically when the authorization
+    # flow completes for the first time.
+
+    try:
+        os.chdir('credentials')
+    except FileNotFoundError:
+        os.mkdir('credentials')
+
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
             creds = pickle.load(token)

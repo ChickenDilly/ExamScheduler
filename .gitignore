@@ -1,2 +1,6 @@
 credentials/*
-
+__pycache__/
+dist/
+venv/
+.env
+build/
