@@ -142,15 +142,16 @@ def weekly_events(calendar_id, _week):
     date_pattern = re.compile(r'[0-1][0-9]-[0-3][0-9]')
     weeks_events = list()
     today = datetime.today()
-    # today = datetime(year=2020, day=1, month=9)
     week = _week  # number of days defined as a week
 
     # from all events in the calendar look for the events in the next X days
     # all duplicates wont be added to weeks_events
     for event in __events:
         event_date = date_pattern.search(event['summary']).group(0)
+        event_month, event_day = int(event_date[0:2]), int(event_date[3:])
+
         try:
-            event_datetime = datetime(month=int(event_date[0:2]), day=int(event_date[3:]), year=today.year)
+            event_datetime = datetime(month=event_month, day=event_day, year=today.year)
 
             if timedelta(days=week) >= event_datetime - today >= timedelta(days=0):
                 equal_summary = False
@@ -176,10 +177,10 @@ def weekly_events(calendar_id, _week):
         print('No events are upcoming in the next {} days.'.format(week))
         return
 
-    print(r"Getting this week's events...")
-
-    for event in weeks_events:
-        print(event['summary'])
+    else:
+        print(r"Getting this week's events...")
+        for event in weeks_events:
+            print(event['summary'])
 
 
 

@@ -22,6 +22,7 @@ def setup():
         os.chdir('credentials')
     except FileNotFoundError:
         os.mkdir('credentials')
+        os.chdir('credentials')
 
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
