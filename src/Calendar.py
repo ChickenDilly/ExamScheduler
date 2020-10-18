@@ -22,8 +22,12 @@ def new_calendar():
 
             if calendar_list_entry['summary'] == 'Exam Schedule':
                 if selection.upper() == "D":
-                    service.calendars().delete(calendarId=calendar_list_entry['id']).execute()
-                    break
+                    if input("Are you sure you want to delete old events? (y/n)").upper() == "Y":
+                        service.calendars().delete(calendarId=calendar_list_entry['id']).execute()
+                        break
+                    else:
+                        print("Invalid entry. Try again.")
+                        new_calendar()
                 elif selection.upper() == "U":
                     return calendar_list_entry['id']
                 else:
