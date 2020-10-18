@@ -6,3 +6,4 @@ venv/
 build/
 src/.idea/
 .idea/
+*.spec

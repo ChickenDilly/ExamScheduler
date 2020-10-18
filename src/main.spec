@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['main.py'],
+a = Analysis(['main.py', 'setup.py'],
              pathex=['E:\\Antoine\\Documents\\Programming\\Python\\ExamScheduler2.0\\src'],
              binaries=[],
              datas=[],

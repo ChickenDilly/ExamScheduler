@@ -1,5 +1,5 @@
 from src.setup import setup
-import src.School
+import src.School as School
 from datetime import datetime, timedelta
 import re
 
@@ -10,7 +10,7 @@ def get_calendar_service():
 
 
 def new_calendar():
-    # adds all events
+    # adds all events to the exam schedule calendar, or new calendar if it doesn't exist
     service = get_calendar_service()
     calendar_format = {'summary': 'Exam Schedule', 'timeZone': 'America/New_York'}
     selection = str(input("Press (U) to update the calendar or (D) to delete old entries."))
@@ -59,17 +59,20 @@ def return_calendar_id():
     return calendar['id']
 
 
-def set_events(school_class: src.School.SchoolClass, exam_calendar_id: str):
+def set_events(school_class: School.SchoolClass, exam_calendar_id: str):
     service = get_calendar_service()
-    exam_list = school_class.all_exams
+    exam_list, remaining_keys = school_class.all_exams, list(school_class.all_exams.keys())
     today = datetime.today()
+    all_summaries = get_events_summaries(exam_calendar_id)
 
+    # sets all events from a class to the calendar
     for key in exam_list:
         # yyyy-mm-dd format
         temp_string = "{0}-{1}".format(today.year, exam_list[key])
         exam_date = datetime.strptime(temp_string, "%Y-%m-%d").date()
         summary = "{0} {1} {2}".format(school_class.class_name, key, exam_list[key])
         timezone = "America/New_York"
+        remaining_keys.remove(key)
 
         if "quiz" in key.lower() or "homework" in key.lower():
             # event starts 10 days prior to quiz
@@ -83,7 +86,7 @@ def set_events(school_class: src.School.SchoolClass, exam_calendar_id: str):
             end_time = "{}T12:00:00.000".format(exam_date - timedelta(days=15))
             recurrence_rule = "RRULE:FREQ=DAILY;INTERVAL=3;COUNT=6"
 
-        # new alert every X days (3 for exams, 2 for quizzes)
+        # new alert every X days (3 for exams, 2 for quizzes/hw)
         event_format = {
             "summary": summary,
             "start": {
@@ -103,14 +106,36 @@ def set_events(school_class: src.School.SchoolClass, exam_calendar_id: str):
             }
         }
 
-        service.events().insert(calendarId=exam_calendar_id, body=event_format).execute()
+        # identical summaries won't be added again
+        if key in remaining_keys:
+            continue
+        if summary in all_summaries:
+            continue
+        else:
+            service.events().insert(calendarId=exam_calendar_id, body=event_format).execute()
 
 
-def view_events(items: int, calendar_id):
-    # prints the next X events
+def get_events_summaries(calendar_id):
     service = get_calendar_service()
+    events_result = service.events().list(
+        calendarId=calendar_id,
+        singleEvents=True, orderBy='startTime').execute()
+    all_events = events_result.get('items', [])
+
+    index = 0
+    for event in all_events:
+        all_events[index] = event['summary']
+        index += 1
+
+    return list(set(all_events))
+    
+    
+def view_events(items: int, calendar_id):
+    # prints the next X events from today's date
+    # not able to return all events
     now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-    print('Getting List {} events'.format(items))
+
+    service = get_calendar_service()
     events_result = service.events().list(
        calendarId=calendar_id, timeMin=now,
        maxResults=items, singleEvents=True,
@@ -175,7 +200,6 @@ def weekly_events(calendar_id, _week):
 
     if len(weeks_events) == 0:
         print('No events are upcoming in the next {} days.'.format(week))
-        return
 
     else:
         print(r"Getting this week's events...")

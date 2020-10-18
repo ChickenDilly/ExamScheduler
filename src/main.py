@@ -7,11 +7,14 @@ def main():
     menu = "Select a menu option. " \
            "\n 0. Quit \n 1. Create calendar entries. \n 2. View calendar entries. \n 3. View upcoming due dates." \
            "\n "
-    selection = ""
 
-    while selection != "0":
+    while True:
         setup.setup()
         selection = input(menu)
+
+        if selection == "0":
+            print("Goodbye!")
+            quit()
 
         if selection == "1":
             all_classes = list()
@@ -55,3 +58,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
