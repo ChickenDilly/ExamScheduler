@@ -63,7 +63,7 @@ def return_calendar_id():
     return calendar['id']
 
 
-def set_events(school_class: School.SchoolClass, exam_calendar_id: str):
+def set_events(school_class: School.CollegeClass, exam_calendar_id: str):
     service = get_calendar_service()
     exam_list, remaining_keys = school_class.all_exams, list(school_class.all_exams.keys())
     today = datetime.today()
@@ -78,7 +78,7 @@ def set_events(school_class: School.SchoolClass, exam_calendar_id: str):
         timezone = "America/New_York"
         remaining_keys.remove(key)
 
-        if "quiz" in key.lower() or "homework" in key.lower():
+        if "quiz" in key.lower() or "homework" or "hw" in key.lower():
             # event starts 10 days prior to quiz
             start_time = "{}T10:00:00.000".format(exam_date - timedelta(days=10))
             end_time = "{}T12:00:00.000".format(exam_date - timedelta(days=10))

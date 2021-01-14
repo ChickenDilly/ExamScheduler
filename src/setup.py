@@ -20,9 +20,9 @@ def setup():
 
     try:
         os.chdir('credentials')
-    except FileNotFoundError:
+    except FileNotFoundError as error:
         os.mkdir('credentials')
-        os.chdir('credentials')
+        print("API credentials aren't found.")
 
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:

@@ -1,9 +1,10 @@
 credentials/*
+
 __pycache__/
 dist/
 venv/
 .env
 build/
-src/.idea/
-.idea/
+
+*.idea/
 *.spec

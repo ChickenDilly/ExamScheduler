@@ -21,7 +21,7 @@ def main():
             class_name = input("Enter the class name or press (Q) to quit. \n")
 
             while class_name.upper() != "Q":
-                all_classes.append(School.SchoolClass.new_school_class(class_name))
+                all_classes.append(School.CollegeClass.new_school_class(class_name))
                 class_name = input("Enter the class name or press (Q) to quit.\n")
 
             try:
@@ -54,8 +54,4 @@ def main():
 
         else:
             print("Invalid input. Try again.")
-
-
-if __name__ == '__main__':
-    main()
 

@@ -12,8 +12,8 @@ def main():
             'exam 2': '{}-{}'.format(tomorrow.month, tomorrow.day)
     }
 
-    class_1 = src.School.SchoolClass('Class 1')
-    class_2 = src.School.SchoolClass('Class 2')
+    class_1 = src.School.CollegeClass('Class 1')
+    class_2 = src.School.CollegeClass('Class 2')
     class_1.list_of_exams = exams
     class_2.list_of_exams = exams
 
