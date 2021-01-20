@@ -18,11 +18,11 @@ def main():
 
         if selection == "1":
             all_classes = list()
-            class_name = input("Enter the class name or press (Q) to quit. \n")
+            class_name = input("Enter the class name or press (Q) to quit. \n").upper().replace(" ", "")
 
             while class_name.upper() != "Q":
                 all_classes.append(School.CollegeClass.new_school_class(class_name))
-                class_name = input("Enter the class name or press (Q) to quit.\n")
+                class_name = input("Enter the class name or press (Q) to quit.\n").upper().replace(" ", "")
 
             try:
                 if all_classes[0].all_exams:
@@ -46,8 +46,9 @@ def main():
 
         elif selection == "3":
             try:
+                search_class = input("Enter a class to find a certain class's events, or don't").upper().replace(" ", "")
                 dates = int(input("How many days to view due dates."))
-                Calendar.weekly_events(Calendar.return_calendar_id(), dates)
+                Calendar.weekly_events(Calendar.return_calendar_id(), dates, search_class)
 
             except ValueError:
                 print("Invalid input.")
