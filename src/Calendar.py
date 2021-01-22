@@ -78,7 +78,7 @@ def set_events(school_class: School.CollegeClass, exam_calendar_id: str):
         timezone = "America/New_York"
         remaining_keys.remove(key)
 
-        if "quiz" in key.lower() or "homework" or "hw" in key.lower():
+        if "quiz" or "homework" or "hw" or "lab" in key.lower():
             # event starts 10 days prior to quiz
             start_time = "{}T10:00:00.000".format(exam_date - timedelta(days=10))
             end_time = "{}T12:00:00.000".format(exam_date - timedelta(days=10))
@@ -163,20 +163,26 @@ def weekly_events(calendar_id, _week, search_class):
     service = get_calendar_service()
     service_results = service.events().list(
         calendarId=calendar_id,
-        singleEvents=True, orderBy='startTime').execute()
+        singleEvents=True, orderBy='startTime', maxResults=2500).execute()
     __events = service_results.get('items', [])
+
     # there's nothing to check validity of input class to list of classes
     enable_class_search = search_class != ""
 
     # format: mm-dd
     date_pattern = re.compile(r'[0-1][0-9]-[0-3][0-9]')
+    week = _week  # number of days defined as a week
     weeks_events = list()
     today = datetime.today()
-    week = _week  # number of days defined as a week
+    last_event_day = today + timedelta(days=week + 1)
 
     # from all events in the calendar look for the events in the next X days
     # all duplicates wont be added to weeks_events
     for event in __events:
+        calendar_startDate = event['start']['dateTime']
+        if datetime.strptime(calendar_startDate, "%Y-%m-%dT%H:%M:%S-05:00").date() == last_event_day.date():
+            break
+
         if enable_class_search:
             if event['summary'].find(search_class) != -1:
                 pass
