@@ -167,6 +167,7 @@ def weekly_events(calendar_id, _week, search_class):
     __events = service_results.get('items', [])
 
     # there's nothing to check validity of input class to list of classes
+    # checks if class search is enabled
     enable_class_search = search_class != ""
 
     # format: mm-dd
@@ -176,13 +177,14 @@ def weekly_events(calendar_id, _week, search_class):
     today = datetime.today()
     last_event_day = today + timedelta(days=week + 1)
 
-    # from all events in the calendar look for the events in the next X days
+    # from all events in the calendar ...
     # all duplicates wont be added to weeks_events
     for event in __events:
-        calendar_startDate = event['start']['dateTime']
-        if datetime.strptime(calendar_startDate, "%Y-%m-%dT%H:%M:%S-05:00").date() == last_event_day.date():
+        calendar_start_date = event['start']['dateTime']
+        if datetime.strptime(calendar_start_date, "%Y-%m-%dT%H:%M:%S-05:00").date() == last_event_day.date():
             break
 
+        # when class search's enabled, only events containing search_class
         if enable_class_search:
             if event['summary'].find(search_class) != -1:
                 pass
@@ -193,9 +195,10 @@ def weekly_events(calendar_id, _week, search_class):
         event_month, event_day = int(event_date[0:2]), int(event_date[3:])
 
         try:
+            # look for the events in the next X days
             event_datetime = datetime(month=event_month, day=event_day, year=today.year)
 
-            if timedelta(days=week) >= event_datetime - today >= timedelta(days=0):
+            if timedelta(days=week) >= event_datetime - today.replace(hour=0, minute=0, second=0) >= timedelta(days=0):
                 equal_summary = False
 
                 for index_weeks in range(0, len(weeks_events), 1):

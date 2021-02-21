@@ -4,7 +4,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
-
+# os.load
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 # insert path to credentials file
 CREDENTIALS_FILE = os.path.join(os.path.abspath('credentials'), 'credentials.json')
@@ -43,4 +43,5 @@ def setup():
     return build('calendar', 'v3', credentials=creds)
 
 
-
+# TODO: make setup work with an .env file
+#
