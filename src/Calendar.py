@@ -1,6 +1,6 @@
 from src.setup import setup
 import src.School as School
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import re
 
 
@@ -195,10 +195,10 @@ def weekly_events(calendar_id, _week, search_class):
         event_month, event_day = int(event_date[0:2]), int(event_date[3:])
 
         try:
-            # look for the events in the next X days
+            # look for the events in the next X(_week) days
             event_datetime = datetime(month=event_month, day=event_day, year=today.year)
 
-            if timedelta(days=week) >= event_datetime - today.replace(hour=0, minute=0, second=0) >= timedelta(days=0):
+            if timedelta(days=week) >= event_datetime - today.replace(hour=0, minute=0, second=0, microsecond=0) >= timedelta(days=0):
                 equal_summary = False
 
                 for index_weeks in range(0, len(weeks_events), 1):
