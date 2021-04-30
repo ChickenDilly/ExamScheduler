@@ -181,7 +181,7 @@ def weekly_events(calendar_id, _week, search_class):
             calendarId=calendar_id,
             singleEvents=True,
             orderBy="startTime",
-            maxResults=500,
+            maxResults=1000,
         )
         .execute()
     )
