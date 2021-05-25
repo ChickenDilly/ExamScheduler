@@ -1,8 +1,10 @@
-search for events based on class type
-stablize pyinstaller
-preventing duplicated itesms from being entered
+deploy this on a website
+secure env files for deployment
+use sessions for usage of the setup function
 
 Completed:
 weekly update of all events
 today's events arent viewed
 add search by class name
+preventing duplicated itesms from being entered
+search for events based on class type

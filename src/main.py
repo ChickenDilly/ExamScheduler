@@ -55,7 +55,7 @@ def main():
                 print("Invalid input.")
 
         elif selection == "3":
-            #try:
+            try:
                 search_class = (
                     input("Enter a class to find a certain class's events, or don't")
                     .upper()
@@ -67,8 +67,8 @@ def main():
                 )
 
             # dates input must be an integer
-            #except ValueError:
-              #  print("Invalid input.")
+            except ValueError:
+                print("Invalid input.")
 
         else:
             print("Invalid input. Try again.")
