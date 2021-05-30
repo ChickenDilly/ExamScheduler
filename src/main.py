@@ -1,7 +1,6 @@
-import src.School as School
-import src.Calendar as Calendar
-import src.setup as setup
-
+import School as School
+import Calendar as Calendar
+import setup as setup
 
 def main():
     menu = (
@@ -72,3 +71,8 @@ def main():
 
         else:
             print("Invalid input. Try again.")
+
+
+
+if __name__ == '__main__':
+    main()

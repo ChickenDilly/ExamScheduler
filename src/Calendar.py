@@ -1,5 +1,5 @@
-from src.setup import setup
-import src.School as School
+from setup import setup
+import School as School
 from datetime import datetime, timedelta
 import re
 
